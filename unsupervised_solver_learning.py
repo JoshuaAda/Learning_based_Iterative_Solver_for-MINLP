@@ -42,7 +42,7 @@ n_neurons = 2000 # number of neurons per hidden layer
 
 # NN Training
 N_steps = 200 # number of solver forward steps per epoch
-N_epochs = 100 # number of epochs
+N_epochs = 10 # number of epochs
 batch_size = 1024
 lrs = [1e-3] # learning rates for learning rate scheduling: only one is used
 
@@ -101,7 +101,7 @@ def full_step(nlp_handler,solver_nn,z_k_i,p_i,eps_i,offset,rangeF):
 # Parameter Sampling
 def gen_rand_p(N):
     x_0_batch = torch.rand(N,2)*20-10
-    u_prev_batch = torch.rand(N,1)*4-2    
+    u_prev_batch = torch.rand(N,2)*4-2
     return torch.hstack((x_0_batch, u_prev_batch))
 
 def gen_rand_z_norm(N,nlp_handler):
@@ -155,7 +155,7 @@ for lr in lrs:
         epoch_loss = 0.0
         epoch_eta = 0.0
         for step in range(N_steps):
-
+            #print(step)
             # calc F_k_batch
             F_k_batch = nlp_handler.F_FB_batch_func(z_batch.numpy().T,p_batch.numpy().T,eps_batch.numpy().T)
             F_k_batch = torch.tensor(np.array(F_k_batch).T)

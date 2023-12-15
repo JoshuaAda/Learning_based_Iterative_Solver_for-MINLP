@@ -22,11 +22,11 @@ estimator = do_mpc.estimator.StateFeedback(model)
 # INFO
 lbx, ubx = np.array(mpc.bounds['lower','_x','x']), np.array(mpc.bounds['upper','_x','x'])
 lub, ubu = np.array(mpc.bounds['lower','_u','u']), np.array(mpc.bounds['upper','_u','u'])
-
+lub2, ubu2 = np.array(mpc.bounds['lower','_u','u2']), np.array(mpc.bounds['upper','_u','u2'])
 # CONFIG
 e = np.ones([model.n_x,1])
 x0 = np.random.uniform(-4*e,4*e)
-u0 = DM(0)
+u0 = np.array([0,0])
 
 noise_level = 0.3
 
@@ -46,7 +46,7 @@ for k in range(N_sim):
     y_next = simulator.make_step(u0)
     x0 = estimator.make_step(y_next) + np.random.normal(0,noise_level,[model.n_x,1])
 
-fig1, axs_1 = plt.subplots(3,1)
+fig1, axs_1 = plt.subplots(4,1)
 axs_1[0].plot(simulator.data['_x','x',0],label='x1')
 axs_1[0].hlines(lbx[0],0,N_sim,colors='r',linestyles='dashed',label="lower bound")
 axs_1[0].hlines(ubx[0],0,N_sim,colors='r',linestyles='dashed',label="upper bound")
@@ -65,10 +65,16 @@ axs_1[2].hlines(ubu,0,N_sim,colors='r',linestyles='dashed',label="upper bound")
 axs_1[2].hlines(0,0,N_sim,colors='k',linestyles='dashed',label="origin",linewidth=0.5)
 axs_1[2].set_xlabel("time")
 
+axs_1[3].plot(simulator.data['_u','u2'],label='u2')
+axs_1[3].hlines(lub2,0,N_sim,colors='r',linestyles='dashed',label="lower bound")
+axs_1[3].hlines(ubu2,0,N_sim,colors='r',linestyles='dashed',label="upper bound")
+axs_1[3].hlines(0,0,N_sim,colors='k',linestyles='dashed',label="origin",linewidth=0.5)
+axs_1[3].set_xlabel("time")
+
 axs_1[0].legend()
 axs_1[1].legend()
 axs_1[2].legend()
-
+#axs_1[3].legend()
 
 fig2, axs_2 = plt.subplots(1,1)
 axs_2.plot(simulator.data['_x','x',0],simulator.data['_x','x',1],label="trajectory (x1,x2)")

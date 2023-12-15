@@ -25,7 +25,7 @@ def template_mpc(model, silence_solver = False):
     lterm = model.aux['stage_cost'] # terminal cost
 
     mpc.set_objective(mterm=mterm, lterm=lterm)
-    mpc.set_rterm(u=1e-4)
+    mpc.set_rterm(u=1e-4, u2=1e-4)
 
     max_x = np.array([[10.0], [10.0]])
 
@@ -34,6 +34,9 @@ def template_mpc(model, silence_solver = False):
 
     mpc.bounds['lower','_u','u'] = -2
     mpc.bounds['upper','_u','u'] =  2
+
+    mpc.bounds['lower', '_u', 'u2'] = 0
+    mpc.bounds['upper', '_u', 'u2'] = 1
 
 
     mpc.setup()

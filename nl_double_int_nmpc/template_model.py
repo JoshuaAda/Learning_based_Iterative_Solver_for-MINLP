@@ -23,6 +23,7 @@ def template_model(symvar_type='SX'):
     _x = model.set_variable(var_type='_x', var_name='x', shape=(2,1))
     
     _u = model.set_variable(var_type='_u', var_name='u', shape=(1,1))
+    u2 = model.set_variable(var_type='_u', var_name='u2', shape=(1,1),input_type_integer=True)
 
     A = np.array([[ 1,  1],
                   [ 0,  1]])
@@ -43,7 +44,7 @@ def template_model(symvar_type='SX'):
     model.set_expression(expr_name='stage_cost', expr=stage_cost)
     model.set_expression(expr_name='terminal_cost', expr=terminal_cost)
 
-    x_next = A@_x + B@_u + F@_x.T@_x
+    x_next = A@_x + B@_u*u2-B@_u*(1-u2) + F@_x.T@_x
     model.set_rhs('x', x_next)
 
     model.setup()
